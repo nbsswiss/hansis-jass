@@ -1,5 +1,18 @@
 # Changelog – Hansis Jass
 
+## 1.20 – 2026-10-18
+
+- Karten neu im Stil der Schweizer Jasskarten (nach Fotos): grosse Farbzeichen ohne
+  Buchstaben, „10“ in den Eckzeichen der Zehn, Ass mit vier kleinen Eckzeichen,
+  Bildkarten mit grossem Farbzeichen oben links und neu gezeichneten Figuren
+  (König mit Schwert und Reichsapfel, Dame mit Rose, Bauer mit Federbarett und Hellebarde).
+  Karten etwas grösser.
+- Hand sortiert: Farben abwechselnd schwarz/rot, Trumpf zuerst; innerhalb der Farbe nach
+  der Zahl (Bauer und Nell auch beim Trumpf an ihrem natürlichen Platz).
+- Anzeige oben: „Trumpf ♥ Herz – gemacht von …“ (und wer geschoben hat); beim Spieler, der
+  Trumpf gemacht hat, steht ein Trumpf-Abzeichen.
+- Pfeile korrigiert: Obenabe ⬇︎, Undeufe ⬆︎.
+
 ## 1.11 – 2026-10-18
 
 - Updates kommen sofort aufs iPad: Der Service Worker fragt immer beim Server nach

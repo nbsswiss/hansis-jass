@@ -3,7 +3,7 @@ import { VERSION, APP_NAME } from '../version.js';
 import { createGame, startRound, gameChoose, gamePlay, roundMultiplier, DEFAULT_SETTINGS } from '../core/game.js';
 import { viewFor, currentLegalMoves, PUSH } from '../core/round.js';
 import { OBE, UNDE, multiplier, modeName, sortHand, SUIT_NAMES } from '../core/cards.js';
-import { cardElement, backElement, suitSymbol, suitClass } from './cards-view.js';
+import { cardElement, backElement, suitIcon, suitClass } from './cards-view.js';
 
 const NAMES = ['Du', 'Ruedi', 'Vreni', 'Heidi'];
 const STORE_GAME = 'hansis-jass-game';
@@ -82,10 +82,11 @@ async function askAI(kind, view) {
 const style = () => game.settings.cardStyle;
 const teamName = (t) => (t === 0 ? 'uns' : 'die Gegner');
 
+// Obenabe = von oben nach unten (Pfeil nach unten), Undeufe = von unten nach oben (Pfeil nach oben)
 function modeLabel(mode) {
-  if (mode === OBE) return { sym: '⬆︎', name: 'Obenabe', cls: 'black' };
-  if (mode === UNDE) return { sym: '⬇︎', name: 'Undeufe', cls: 'black' };
-  return { sym: suitSymbol(mode, style()), name: SUIT_NAMES[style()][mode], cls: suitClass(mode, style()) };
+  if (mode === OBE) return { sym: '<span class="arrow">⬇︎</span>', name: 'Obenabe', cls: 'black' };
+  if (mode === UNDE) return { sym: '<span class="arrow">⬆︎</span>', name: 'Undeufe', cls: 'black' };
+  return { sym: suitIcon(mode, style()), name: SUIT_NAMES[style()][mode], cls: suitClass(mode, style()) };
 }
 
 // Angezeigter Stand: läuft beim Darstellen der Ereignisse dem echten Stand hinterher,
@@ -111,8 +112,9 @@ function renderModeInfo() {
   }
   const m = modeLabel(r.mode);
   const mult = roundMultiplier(game);
-  el.innerHTML = `<span class="mode-chip"><span class="sym" style="color:var(--${m.cls === 'black' ? 'ink' : m.cls === 'red' ? 'red' : m.cls === 'gold' ? 'gold-suit' : 'brown'})">${m.sym}</span>${m.name}${mult > 1 ? ` <span class="mult">×${mult}</span>` : ''}</span>
-    <span class="who">${NAMES[r.chooser]}${r.pushed ? ' (geschoben)' : ''}</span>`;
+  const kind = r.mode < 4 ? 'Trumpf' : 'Gespielt wird';
+  el.innerHTML = `<span class="mode-chip"><span class="kind">${kind}</span><span class="sym">${m.sym}</span>${m.name}${mult > 1 ? ` <span class="mult">×${mult}</span>` : ''}</span>
+    <span class="who">gemacht von <b>${r.chooser === 0 ? 'dir' : NAMES[r.chooser]}</b>${r.pushed ? `<br>${r.ansager === 0 ? 'du hast' : `${NAMES[r.ansager]} hat`} geschoben` : ''}</span>`;
 }
 
 function renderSeats() {
@@ -138,7 +140,11 @@ function playerLabel(seat, id) {
   if (id) el.id = id;
   if (r && r.phase !== 'done' && r.toAct === seat) el.classList.add('active');
   let badges = '';
-  if (r && r.ansager === seat) badges += '<span class="badge">Ansager</span>';
+  if (r && r.ansager === seat && (r.mode === null || r.pushed)) badges += `<span class="badge">${r.pushed ? 'geschoben' : 'Ansager'}</span>`;
+  if (r && r.mode !== null && r.chooser === seat) {
+    const m = modeLabel(r.mode);
+    badges += `<span class="badge trumpf">${m.sym} ${r.mode < 4 ? 'Trumpf' : m.name}</span>`;
+  }
   el.innerHTML = `<span class="dot"></span>${NAMES[seat]}${seat === 2 ? ' · Partnerin' : ''}${badges}`;
   return el;
 }

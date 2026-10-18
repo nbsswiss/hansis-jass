@@ -36,9 +36,18 @@ test('Multiplikator: rot ×1, schwarz ×2, Obe/Unde ×3, ausgeschaltet ×1', () 
   eq(multiplier(UNDE, false), 1);
 });
 
-test('Hand sortieren: Trumpf zuerst, Bauer und Nell oben', () => {
+test('Hand sortieren: Trumpf zuerst, innerhalb nach Zahl (Nell nicht nach Wert)', () => {
   const sorted = sortHand(H('♥A ♠6 ♠B ♠9 ♠A ♦K'), SPADE).map(cardShort);
-  eq(sorted.slice(0, 4), ['♠B', '♠9', '♠A', '♠6']);
+  eq(sorted, ['♠A', '♠B', '♠9', '♠6', '♥A', '♦K']);
+});
+
+test('Hand sortieren: Farben abwechselnd schwarz und rot', () => {
+  const hand = H('♦6 ♣7 ♥8 ♠9');
+  eq(sortHand(hand).map(cardShort), ['♠9', '♥8', '♣7', '♦6']);
+  eq(sortHand(hand, HEART).map(cardShort), ['♥8', '♠9', '♦6', '♣7']);
+  eq(sortHand(hand, CLUB).map(cardShort), ['♣7', '♥8', '♠9', '♦6']);
+  // nur drei Farben: rot-schwarz-rot statt zwei gleiche nebeneinander
+  eq(sortHand(H('♦6 ♥8 ♠9')).map(cardShort), ['♥8', '♠9', '♦6']);
 });
 
 // ---------- Stich ----------

@@ -76,3 +76,11 @@ Dann `http://localhost:8080` öffnen.
 - App: https://nbsswiss.github.io/hansis-jass/ (GitHub Pages, Branch `main`, Ordner `/`)
 - Jeder Push auf `main` wird automatisch veröffentlicht. Vorher Tests laufen lassen,
   Version erhöhen und mit `git tag vX.YY` markieren.
+
+## Offene Wünsche (für später)
+
+- **Echte Portraits auf den Bildkarten:** Die Köpfe von König, Dame und Bauer sollen durch
+  echte Portrait-Fotos ersetzt werden können (z. B. Familie/Freunde). Vorbereitung: In
+  `src/ui/faces.js` sitzt der Kopf jeder Figur immer an derselben Stelle (Ellipse um 50/28,
+  gezeichnet in `head()`); dort kann später ein rund zugeschnittenes Bild eingesetzt werden.
+  Fotos lokal im Gerät speichern (nicht hochladen).

@@ -100,14 +100,37 @@ export function parseCard(text) {
 
 export const parseCards = (text) => text.trim().split(/\s+/).filter(Boolean).map(parseCard);
 
-// Sortierung für die Hand: Trumpf zuerst, Farben abwechselnd rot/schwarz, innerhalb nach Stärke.
+// Sortierung für die Hand (Wunsch der Spielerin):
+// - Farben abwechselnd schwarz/rot (♠ ♥ ♣ ♦), Trumpf zuerst; fehlt eine Farbe, wird die
+//   Reihenfolge so gewählt, dass möglichst oft schwarz und rot wechseln.
+// - Innerhalb der Farbe immer nach der Zahl (A K D B 10 9 8 7 6), auch beim Trumpf:
+//   Bauer und Nell bleiben an ihrem natürlichen Platz.
+const SUIT_PREF = [2, 1, 3, 0]; // ♠ ♥ ♣ ♦
+const isRed = (s) => s < 2;
+
+function permutations(list) {
+  if (list.length <= 1) return [list];
+  return list.flatMap((x, i) => permutations([...list.slice(0, i), ...list.slice(i + 1)]).map((p) => [x, ...p]));
+}
+
+export function suitOrder(cards, mode = null) {
+  const present = SUIT_PREF.filter((s) => cards.some((c) => suitOf(c) === s));
+  const trump = mode !== null && mode < 4 && present.includes(mode) ? mode : -1;
+  let best = null, bestScore = -1;
+  for (const p of permutations(present)) {
+    if (trump >= 0 && p[0] !== trump) continue;
+    let score = 0;
+    for (let i = 1; i < p.length; i++) if (isRed(p[i]) !== isRed(p[i - 1])) score++;
+    if (score > bestScore) { bestScore = score; best = p; } // erste beste = bevorzugte Reihenfolge
+  }
+  return best || [];
+}
+
 export function sortHand(cards, mode = null) {
-  const order = [1, 2, 0, 3]; // ♥ ♠ ♦ ♣
-  const suitKey = (s) => (mode !== null && mode < 4 && s === mode ? -1 : order.indexOf(s));
-  const m = mode === null ? OBE : mode;
+  const order = suitOrder(cards, mode);
   return [...cards].sort((a, b) => {
-    const sa = suitKey(suitOf(a)), sb = suitKey(suitOf(b));
+    const sa = order.indexOf(suitOf(a)), sb = order.indexOf(suitOf(b));
     if (sa !== sb) return sa - sb;
-    return strength(b, m) - strength(a, m);
+    return rankOf(b) - rankOf(a);
   });
 }
