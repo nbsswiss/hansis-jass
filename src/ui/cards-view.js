@@ -1,5 +1,6 @@
 // Darstellung einzelner Karten als DOM-Elemente (französisches oder deutschschweizer Bild).
 import { suitOf, rankOf, RANK_LABELS, SUIT_SYMBOLS, cardName } from '../core/cards.js';
+import { faceSVG } from './faces.js';
 
 // Deutschschweizer Farben als Bildzeichen
 const DE_SYMBOLS = ['🔔', '🌹', '🛡️', '🌰'];
@@ -41,7 +42,8 @@ export function cardElement(c, style = 'fr') {
   } else if (r === 8) {
     center = `<div class="ace">${sym}</div>`;
   } else {
-    center = `<div class="court"><span class="big">${label}</span><span class="small">${sym}</span></div>`;
+    const symColor = { red: '#c8102e', black: '#1d1d1f', gold: '#b8860b', brown: '#7a4a1e' }[suitClass(s, style)];
+    center = faceSVG(r, s, style, sym, symColor);
   }
   el.innerHTML = corner('tl') + center + corner('br');
   return el;

@@ -24,9 +24,9 @@ const pace = (ms) => ms * (SPEEDS[settings.speed] || 1);
 // ---------------- Speicher ----------------
 function loadSettings() {
   try {
-    return { ...DEFAULT_SETTINGS, level: 'stark', ...JSON.parse(localStorage.getItem(STORE_SETTINGS) || '{}') };
+    return { ...DEFAULT_SETTINGS, level: 'stark', felt: 'gruen', ...JSON.parse(localStorage.getItem(STORE_SETTINGS) || '{}') };
   } catch {
-    return { ...DEFAULT_SETTINGS, level: 'stark' };
+    return { ...DEFAULT_SETTINGS, level: 'stark', felt: 'gruen' };
   }
 }
 function saveSettings() {
@@ -561,6 +561,7 @@ function showSettings() {
     <div class="setting"><span>Multiplikator<span class="hint">rot ×1, schwarz ×2, Obe/Unde ×3 – ab nächster Partie</span></span>${seg('multipliers', [[true, 'Ein'], [false, 'Aus']], s.multipliers)}</div>
     <div class="setting"><span>Zeichen<span class="hint">Bedeutung des ersten Abwerfens</span></span>${seg('convention', [['anziehen', 'Anziehen'], ['verwerfen', 'Verwerfen']], s.convention)}</div>
     <div class="setting"><span>Kartenbild</span>${seg('cardStyle', [['fr', 'Französisch'], ['de', 'Deutsch']], s.cardStyle)}</div>
+    <div class="setting"><span>Jassteppich</span>${seg('felt', [['gruen', 'Grün'], ['blau', 'Blau'], ['rot', 'Bordeaux'], ['schwarz', 'Anthrazit']], s.felt)}</div>
     <div class="setting"><span>Spielstärke</span>${seg('level', [['stark', 'Stark'], ['mittel', 'Mittel']], s.level)}</div>
     <div class="setting"><span>Tempo</span>${seg('speed', [['langsam', 'Langsam'], ['normal', 'Normal'], ['schnell', 'Schnell']], s.speed)}</div>
     <div class="actions"><button class="btn" id="btn-close">Fertig</button></div>`);
@@ -576,6 +577,7 @@ function showSettings() {
       saveSettings();
       g.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
       // Sofort wirksam: Zeichen, Kartenbild, Tempo. Ziel und Multiplikator ab nächster Partie.
+      if (key === 'felt') applyFelt();
       if (['convention', 'cardStyle', 'speed'].includes(key)) {
         game.settings[key] = v;
         saveGame();
@@ -616,7 +618,12 @@ async function runLoop() {
   }
 }
 
+function applyFelt() {
+  document.documentElement.dataset.felt = settings.felt || 'gruen';
+}
+
 function init() {
+  applyFelt();
   const saved = loadGame();
   if (saved && saved.winner === null) {
     game = saved;

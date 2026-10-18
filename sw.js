@@ -1,6 +1,6 @@
 // Service Worker: macht die App offline spielbar.
 // CACHE_VERSION bei jeder neuen Version an src/version.js angleichen (siehe CLAUDE.md).
-const CACHE_VERSION = '1.00';
+const CACHE_VERSION = '1.10';
 const CACHE = `hansis-jass-${CACHE_VERSION}`;
 const FILES = [
   './', 'index.html', 'manifest.webmanifest',
@@ -9,7 +9,7 @@ const FILES = [
   'src/core/cards.js', 'src/core/rules.js', 'src/core/weis.js', 'src/core/round.js', 'src/core/game.js', 'src/core/rng.js',
   'src/ai/worker.js', 'src/ai/player.js', 'src/ai/knowledge.js', 'src/ai/sampler.js', 'src/ai/search.js',
   'src/ai/policy.js', 'src/ai/strategy.js', 'src/ai/bidding.js',
-  'src/ui/app.js', 'src/ui/cards-view.js', 'src/ui/styles.css',
+  'src/ui/app.js', 'src/ui/cards-view.js', 'src/ui/faces.js', 'src/ui/styles.css',
 ];
 
 self.addEventListener('install', (e) => {

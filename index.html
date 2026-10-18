@@ -16,6 +16,31 @@
 </head>
 <body>
   <main id="table">
+    <svg id="emblem" viewBox="0 0 400 400" aria-hidden="true">
+      <defs>
+        <path id="arc-top" d="M 70 200 A 130 130 0 0 1 330 200"/>
+        <path id="arc-bottom" d="M 62 200 A 138 138 0 0 0 338 200"/>
+      </defs>
+      <circle cx="200" cy="200" r="188" fill="none" stroke="currentColor" stroke-width="3"/>
+      <circle cx="200" cy="200" r="178" fill="none" stroke="currentColor" stroke-width="1"/>
+      <circle cx="200" cy="200" r="104" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="200" cy="200" r="98" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5"/>
+      <text font-size="30" font-weight="700" letter-spacing="9" fill="currentColor" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif">
+        <textPath href="#arc-top" startOffset="50%">HANSIS JASS</textPath>
+      </text>
+      <text font-size="20" letter-spacing="10" fill="currentColor" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif">
+        <textPath href="#arc-bottom" startOffset="50%">· SCHIEBER ·</textPath>
+      </text>
+      <g font-size="34" fill="currentColor" text-anchor="middle" dominant-baseline="central">
+        <text x="200" y="158">♥</text><text x="242" y="200">♠</text><text x="200" y="242">♦</text><text x="158" y="200">♣</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.5" fill="none">
+        <path d="M200 120 C 214 140 214 140 200 150 C 186 140 186 140 200 120 Z"/>
+        <path d="M200 280 C 214 260 214 260 200 250 C 186 260 186 260 200 280 Z"/>
+        <path d="M120 200 C 140 186 140 186 150 200 C 140 214 140 214 120 200 Z"/>
+        <path d="M280 200 C 260 186 260 186 250 200 C 260 214 260 214 280 200 Z"/>
+      </g>
+    </svg>
     <header id="topbar">
       <div id="scores">
         <div class="team" data-team="0">
