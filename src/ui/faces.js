@@ -68,10 +68,19 @@ function king(p, mark) {
   <path d="M38 47 Q50 64 62 47" fill="none" stroke="${INK}" stroke-width=".4"/>
   <rect x="45" y="55" width="10" height="9" rx="1.5" fill="${YELLOW}" ${S(0.7)}/>
   ${mark(50, 59.5, 6)}
-  <path d="M36 15 C36 3 64 3 64 15 Z" fill="${YELLOW}" ${S(0.9)}/>
-  <rect x="32.5" y="12.6" width="35" height="5.6" rx="1" fill="${RED}" ${S(0.8)}/>
-  <path d="M33.5 17.4 l3 -4 l3 4 l3 -4 l3 4 l3 -4 l3 4 l3 -4 l3 4 l3 -4 l3 4 l3 -4" fill="none" stroke="${YELLOW}" stroke-width="1"/>
-  <circle cx="32.6" cy="15.4" r="2.2" fill="${RED}" ${S(0.6)}/><circle cx="67.4" cy="15.4" r="2.2" fill="${RED}" ${S(0.6)}/>
+  <path d="M31 16 C31 8 69 8 69 16 Z" fill="${RED}" ${S(0.8)}/>
+  <path d="M29 17.5 L26.5 3.5 L35.5 10.5 L40 1.8 L45.2 9.6 L50 0.8 L54.8 9.6 L60 1.8 L64.5 10.5 L73.5 3.5 L71 17.5 Z" fill="${YELLOW}" ${S(1.1)}/>
+  <path d="M30.5 12.6 L35.5 10.5 M64.5 10.5 L69.5 12.6 M40 4 L42 11 M60 4 L58 11 M50 3 V10.4" stroke="#c99a06" stroke-width="1.2" fill="none"/>
+  <rect x="28.4" y="13.6" width="43.2" height="6.6" rx="1.4" fill="${YELLOW}" ${S(1.1)}/>
+  <path d="M29 15.2 H71" stroke="#c99a06" stroke-width=".9"/>
+  <g ${S(0.6)}>
+    <circle cx="26.5" cy="3.5" r="2.1" fill="${WHITE}"/><circle cx="40" cy="1.8" r="2.1" fill="${WHITE}"/>
+    <circle cx="50" cy="1.4" r="2.4" fill="${WHITE}"/><circle cx="60" cy="1.8" r="2.1" fill="${WHITE}"/>
+    <circle cx="73.5" cy="3.5" r="2.1" fill="${WHITE}"/>
+    <ellipse cx="50" cy="16.9" rx="3" ry="2.4" fill="${RED}"/>
+    <ellipse cx="39.5" cy="16.9" rx="2.2" ry="1.9" fill="${BLUE}"/><ellipse cx="60.5" cy="16.9" rx="2.2" ry="1.9" fill="${BLUE}"/>
+    <ellipse cx="31.6" cy="16.9" rx="1.6" ry="1.5" fill="${GREEN}"/><ellipse cx="68.4" cy="16.9" rx="1.6" ry="1.5" fill="${GREEN}"/>
+  </g>
   <circle cx="21" cy="60" r="9.5" fill="${LIGHT}" ${S(0.9)}/>
   <path d="M21 50.5 v19 M11.5 60 h19" stroke="${YELLOW}" stroke-width="3.2"/>
   <path d="M21 50.5 v19 M11.5 60 h19" stroke="${RED}" stroke-width=".9"/>

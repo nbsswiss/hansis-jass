@@ -103,14 +103,17 @@ function dePip(s, x, y, size, rot, variant) {
 
 const L = 28, C = 50, R = 72;
 const cols = (ys) => ys.flatMap((y) => [[L, y], [R, y]]);
-const LAYOUT = {
+// Pip-Anordnung der Zahlenkarten (auch für das französische Bild verwendet)
+export const NUM_LAYOUT = {
   0: { size: 0.28, pts: cols([24, 50, 76]) },
   1: { size: 0.27, pts: [...cols([24, 50, 76]), [C, 37]] },
   2: { size: 0.26, pts: [...cols([24, 50, 76]), [C, 37], [C, 63]] },
   3: { size: 0.24, pts: [...cols([22, 40.6, 59.4, 78]), [C, 50]] },
+  4: { size: 0.21, pts: [...cols([25, 41.7, 58.3, 75]), [C, 33.3], [C, 66.7]] },
 };
+const LAYOUT = NUM_LAYOUT;
 
-const corners = (text, cls = '') =>
+export const corners = (text, cls = '') =>
   `<span class="dl tl ${cls}">${text}</span><span class="dl tr ${cls}">${text}</span>`
   + `<span class="dl bl ${cls}">${text}</span><span class="dl br ${cls}">${text}</span>`;
 
@@ -126,6 +129,7 @@ function banner(s) {
 }
 
 const FACE_LABEL = { 5: 'UNDER', 6: 'OBER', 7: 'KÖNIG', 8: 'ASS' };
+export const words = (text) => `<span class="dw tl">${text}</span><span class="dw br">${text}</span>`;
 
 // Inhalt einer deutschen Karte; figure(r) liefert das Figuren-SVG für Under/Ober/König.
 export function deCardInner(s, r, figure) {

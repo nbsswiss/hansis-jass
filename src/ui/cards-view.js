@@ -4,7 +4,7 @@
 // Alle Grössen hängen an --cw (Kartenbreite), font-size der Karte = --cw, Pips in em.
 import { suitOf, rankOf, cardName } from '../core/cards.js';
 import { figureSVG } from './faces.js';
-import { deIcon, deShape, deCardInner } from './de-cards.js';
+import { deIcon, deShape, deCardInner, NUM_LAYOUT, corners, words } from './de-cards.js';
 
 // Farbzeichen als SVG (viewBox 0 0 100 100), Spitze bzw. Stiel wie auf den Karten
 const SHAPES = [
@@ -50,15 +50,6 @@ function pip(s, style, x, y, size, rot = false, label = '') {
   return `<span class="pip${rot ? ' rot' : ''}" style="left:${x}%;top:${y}%;font-size:${size}em">${suitIcon(s, style, 'shape')}${lbl}</span>`;
 }
 
-const L = 27, C = 50, R = 73;
-const cols = (ys) => ys.flatMap((y) => [[L, y], [R, y]]);
-const NUMBER_LAYOUT = {
-  0: { size: 0.27, pts: cols([17, 50, 83]) },
-  1: { size: 0.27, pts: [...cols([17, 50, 83]), [C, 33.5]] },
-  2: { size: 0.27, pts: [...cols([17, 50, 83]), [C, 33.5], [C, 66.5]] },
-  3: { size: 0.25, pts: [...cols([14, 38, 62, 86]), [C, 50]] },
-  4: { size: 0.25, pts: [...cols([14, 38, 62, 86]), [C, 26], [C, 74]] },
-};
 
 export function cardElement(c, style = 'fr') {
   const s = suitOf(c), r = rankOf(c);
@@ -73,26 +64,22 @@ export function cardElement(c, style = 'fr') {
     el.innerHTML = deCardInner(s, r, () => figureSVG(r, s, style, mark, portraitFor(r)));
     return el;
   }
+  // Französisches Bild im gleichen Eck-Layout wie die deutschen Karten:
+  // Zahl bzw. Name in den Ecken innerhalb eines feinen Rahmens (spontan besser lesbar)
+  const FR_WORDS = { 5: 'BAUER', 6: 'DAME', 7: 'KÖNIG', 8: 'ASS' };
   if (r <= 4) {
-    const { size, pts } = NUMBER_LAYOUT[r];
-    // Wert in den vier Eckzeichen (oberste und unterste Reihe), wie bei der Zehn auf echten Karten
-    const ys = pts.map(([, y]) => y);
-    const top = Math.min(...ys), bottom = Math.max(...ys);
-    const label = String(r + 6);
-    html = pts.map(([x, y]) => {
-      const corner = x !== C && (y === top || y === bottom);
-      return pip(s, style, x, y, size, y > 50, corner ? label : '');
-    }).join('');
+    const { size, pts } = NUM_LAYOUT[r];
+    html = `<div class="frame de-frame"></div>${corners(String(r + 6))}`
+      + pts.map(([x, y]) => pip(s, style, x, y, size, y > 50)).join('');
   } else if (r === 8) {
-    html = pip(s, style, 16, 10, 0.11) + pip(s, style, 84, 10, 0.11)
-      + pip(s, style, 16, 90, 0.11, true) + pip(s, style, 84, 90, 0.11, true)
-      + pip(s, style, 50, 50, 0.46);
+    html = `<div class="frame de-frame"></div>${words(FR_WORDS[8])}` + pip(s, style, 50, 50, 0.46);
   } else {
     const color = suitColor(s, style);
     const mark = (x, y, size) => `<g transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})" fill="${color}">${SHAPES[s]}</g>`;
-    html = `<div class="frame"><div class="fig">${figureSVG(r, s, style, mark, portraitFor(r))}</div></div>`
-      + pip(s, style, 23, 15.5, 0.24) + pip(s, style, 82, 8.6, 0.1)
-      + pip(s, style, 77, 84.5, 0.24, true) + pip(s, style, 18, 91.4, 0.1, true);
+    html = `<div class="frame de-frame"><div class="fig">${figureSVG(r, s, style, mark, portraitFor(r))}</div></div>`
+      + words(FR_WORDS[r])
+      + pip(s, style, 22, 23.5, 0.2) + pip(s, style, 83, 9.5, 0.1)
+      + pip(s, style, 78, 76.5, 0.2, true) + pip(s, style, 17, 90.5, 0.1, true);
   }
   el.innerHTML = html;
   return el;

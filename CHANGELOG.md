@@ -1,5 +1,11 @@
 # Changelog – Hansis Jass
 
+## 1.70 – 2026-10-18
+
+- Könige deutlich erkennbar: grosse goldene Zackenkrone mit Perlen und Edelsteinen.
+- Französische Karten im gleichen Eck-Layout wie die deutschen: Zahlen in den Ecken im
+  feinen Rahmen, Bildkarten mit „BAUER“ / „DAME“ / „KÖNIG“, Ass mit „ASS“.
+
 ## 1.60 – 2026-10-18
 
 - Deutschschweizer Karten neu nach Fotovorlage: gezeichnete Schellen (gelbe Kugeln mit
