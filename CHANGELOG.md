@@ -1,5 +1,9 @@
 # Changelog – Hansis Jass
 
+## 1.31 – 2026-10-18
+
+- Portraits sind standardmässig eingeschaltet (Schalter in den Einstellungen bleibt).
+
 ## 1.30 – 2026-10-18
 
 - Portraits: In den Einstellungen kann für Bauer, Dame und König je ein Foto gewählt werden

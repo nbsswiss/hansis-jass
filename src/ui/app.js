@@ -613,9 +613,9 @@ setPortraits(portraits);
 
 function loadPortraits() {
   try {
-    return { enabled: false, ...JSON.parse(localStorage.getItem(STORE_PORTRAITS) || '{}') };
+    return { enabled: true, ...JSON.parse(localStorage.getItem(STORE_PORTRAITS) || '{}') };
   } catch {
-    return { enabled: false };
+    return { enabled: true };
   }
 }
 function savePortraits() {
