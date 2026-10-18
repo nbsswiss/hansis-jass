@@ -68,5 +68,11 @@ Vor jeder neuen Version müssen alle Tests grün sein.
 python3 -m http.server 8080
 ```
 
-Dann `http://localhost:8080` öffnen. Fürs iPad (Installation als App mit Offline-Betrieb)
-muss die App über HTTPS ausgeliefert werden, z. B. GitHub Pages oder Netlify.
+Dann `http://localhost:8080` öffnen.
+
+## Veröffentlichung
+
+- Repository: https://github.com/nbsswiss/hansis-jass (öffentlich, Push per SSH)
+- App: https://nbsswiss.github.io/hansis-jass/ (GitHub Pages, Branch `main`, Ordner `/`)
+- Jeder Push auf `main` wird automatisch veröffentlicht. Vorher Tests laufen lassen,
+  Version erhöhen und mit `git tag vX.YY` markieren.
