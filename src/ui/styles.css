@@ -312,3 +312,9 @@ html, body { background: var(--felt-dark); }
     align-items: center; justify-content: center; text-align: center; font-size: 26px; line-height: 1.6;
   }
 }
+
+/* ---------- Portraits in den Einstellungen ---------- */
+.portrait-row .pr { display: flex; align-items: center; gap: 10px; }
+.portrait-row .pv { width: 48px; height: 59px; border-radius: 50%; object-fit: cover; border: 1px solid #bbb; display: inline-flex; align-items: center; justify-content: center; color: #999; background: #ece6d6; }
+.btn.small { font-size: 15px; min-height: 40px; padding: 0 12px; display: inline-flex; align-items: center; }
+.btn.ghost.dark { background: #ece6d6; color: var(--ink); }

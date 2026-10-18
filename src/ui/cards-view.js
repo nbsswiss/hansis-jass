@@ -17,6 +17,11 @@ const SHAPES = [
   '<circle cx="50" cy="27" r="21"/><circle cx="27.5" cy="55" r="21"/><circle cx="72.5" cy="55" r="21"/><path d="M42 40 H58 V62 H42 Z"/><path d="M50 50 C52 76 58 88 70 97 L30 97 C42 88 48 76 50 50 Z"/>',
 ];
 
+// Portraits für die Bildkarten: { enabled, 5: dataUrl (Bauer), 6: (Dame), 7: (König) }
+let portraits = { enabled: false };
+export function setPortraits(p) { portraits = p || { enabled: false }; }
+const portraitFor = (rank) => (portraits.enabled && portraits[rank]) || null;
+
 // Deutschschweizer Farben als Bildzeichen
 const DE_SYMBOLS = ['🔔', '🌹', '🛡️', '🌰'];
 const COLORS = { red: '#e0202e', black: '#141414', gold: '#b8860b', brown: '#7a4a1e' };
@@ -77,7 +82,7 @@ export function cardElement(c, style = 'fr') {
     const mark = (x, y, size) => (style === 'de'
       ? `<text x="${x}" y="${y}" font-size="${size}" text-anchor="middle" dominant-baseline="central">${DE_SYMBOLS[s]}</text>`
       : `<g transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})" fill="${color}">${SHAPES[s]}</g>`);
-    html = `<div class="frame"><div class="fig">${figureSVG(r, s, style, mark)}</div></div>`
+    html = `<div class="frame"><div class="fig">${figureSVG(r, s, style, mark, portraitFor(r))}</div></div>`
       + pip(s, style, 23, 15.5, 0.24) + pip(s, style, 82, 8.6, 0.1)
       + pip(s, style, 77, 84.5, 0.24, true) + pip(s, style, 18, 91.4, 0.1, true);
   }

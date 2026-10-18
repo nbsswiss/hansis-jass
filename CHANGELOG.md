@@ -1,5 +1,11 @@
 # Changelog – Hansis Jass
 
+## 1.30 – 2026-10-18
+
+- Portraits: In den Einstellungen kann für Bauer, Dame und König je ein Foto gewählt werden
+  (Kamera oder Fotomediathek). Es ersetzt den gezeichneten Kopf auf allen vier Farben.
+  Schalter „Portraits auf den Bildkarten“ Ein/Aus. Fotos bleiben nur auf dem Gerät.
+
 ## 1.20 – 2026-10-18
 
 - Karten neu im Stil der Schweizer Jasskarten (nach Fotos): grosse Farbzeichen ohne

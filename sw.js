@@ -1,6 +1,6 @@
 // Service Worker: macht die App offline spielbar.
 // CACHE_VERSION bei jeder neuen Version an src/version.js angleichen (siehe CLAUDE.md).
-const CACHE_VERSION = '1.20';
+const CACHE_VERSION = '1.30';
 const CACHE = `hansis-jass-${CACHE_VERSION}`;
 const FILES = [
   './', 'index.html', 'manifest.webmanifest',

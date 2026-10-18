@@ -77,10 +77,10 @@ Dann `http://localhost:8080` öffnen.
 - Jeder Push auf `main` wird automatisch veröffentlicht. Vorher Tests laufen lassen,
   Version erhöhen und mit `git tag vX.YY` markieren.
 
-## Offene Wünsche (für später)
 
-- **Echte Portraits auf den Bildkarten:** Die Köpfe von König, Dame und Bauer sollen durch
-  echte Portrait-Fotos ersetzt werden können (z. B. Familie/Freunde). Vorbereitung: In
-  `src/ui/faces.js` sitzt der Kopf jeder Figur immer an derselben Stelle (Ellipse um 50/28,
-  gezeichnet in `head()`); dort kann später ein rund zugeschnittenes Bild eingesetzt werden.
-  Fotos lokal im Gerät speichern (nicht hochladen).
+## Portraits
+
+- In den Einstellungen kann pro Figur (Bauer/Under, Dame/Ober, König) ein Foto gewählt werden;
+  es ersetzt den gezeichneten Kopf auf allen vier Farben und lässt sich ein- und ausschalten.
+- Fotos werden auf dem Gerät verkleinert und **nur lokal** gespeichert (localStorage
+  `hansis-jass-portraits`). Keine Familienfotos ins Repository legen: es ist öffentlich.

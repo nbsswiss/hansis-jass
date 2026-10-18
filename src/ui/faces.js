@@ -3,9 +3,9 @@
 // Doppelköpfig: obere Hälfte + um 180° gedrehte Kopie.
 // Koordinaten: viewBox 0 0 100 150, eine Hälfte zeichnet in y = 0..75.
 //
-// Später sollen die Köpfe durch echte Portraits ersetzt werden können (siehe CLAUDE.md,
-// „Offene Wünsche“): Der Kopf jeder Figur sitzt deshalb immer an derselben Stelle
-// (Ellipse um 50/28) und wird in head() gezeichnet.
+// Die Köpfe können durch Portrait-Fotos ersetzt werden (Einstellungen → Portraits):
+// Der Kopf sitzt immer an derselben Stelle (Ellipse um 50/28) und wird in head() gezeichnet;
+// mit Portrait entfallen gezeichnete Haare, Bart und Schnauz.
 
 const INK = '#1c1a18';
 const SKIN = '#f6d6b9';
@@ -27,7 +27,20 @@ const PALETTES = [
 
 const S = (w = 0.9) => `stroke="${INK}" stroke-width="${w}" stroke-linejoin="round"`;
 
+// Portrait (Data-URL) der Figur, die gerade gezeichnet wird; null = gezeichneter Kopf.
+let PORTRAIT = null;
+let clipId = 0;
+const noPortrait = (svg) => (PORTRAIT ? '' : svg);
+
 function head({ hair = '#d8c39c', mouth = '#c8102e', cy = 28 } = {}) {
+  if (PORTRAIT) {
+    const id = `ph${++clipId}`;
+    return `
+  <clipPath id="${id}"><ellipse cx="50" cy="31" rx="15.6" ry="19.2"/></clipPath>
+  <ellipse cx="50" cy="31" rx="15.6" ry="19.2" fill="${SKIN}"/>
+  <image href="${PORTRAIT}" x="34.4" y="11.8" width="31.2" height="38.4" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>
+  <ellipse cx="50" cy="31" rx="15.6" ry="19.2" fill="none" ${S(1)}/>`;
+  }
   return `
   <ellipse cx="50" cy="${cy}" rx="10.8" ry="13.2" fill="${SKIN}" ${S()}/>
   <path d="M42.6 ${cy - 4.6} q2.4 -1.6 4.8 0 M52.6 ${cy - 4.6} q2.4 -1.6 4.8 0" stroke="${hair}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
@@ -46,11 +59,11 @@ function king(p, mark) {
   <path d="M11 75 C14 68 24 65 34 67 L34 75 Z M89 75 C86 68 76 65 66 67 L66 75 Z" fill="${p.trim}" ${S(0.8)}/>
   <path d="M36 46 L64 46 L61 75 L39 75 Z" fill="${p.coat}" ${S(0.9)}/>
   <path d="M38 64 h24 M38.6 69 h22.8" stroke="${RED}" stroke-width="1.4"/>
-  <path d="M33 17 C27 28 29 40 35 46 L65 46 C71 40 73 28 67 17 Z" fill="${hair}" ${S(0.8)}/>
+  ${noPortrait(`<path d="M33 17 C27 28 29 40 35 46 L65 46 C71 40 73 28 67 17 Z" fill="${hair}" ${S(0.8)}/>`)}
   <path d="M39 45 L50 51 L61 45 L59 41 L41 41 Z" fill="${WHITE}" ${S(0.8)}/>
   ${head({ hair: '#9b7d55' })}
-  <path d="M39 31 C39 45 44 50 50 50 C56 50 61 45 61 31 C57 37 43 37 39 31 Z" fill="${hair}" ${S(0.8)}/>
-  <path d="M44.6 35.6 C47 34 49 34.6 50 35.4 C51 34.6 53 34 55.4 35.6 C53 36.6 51 36.4 50 36.2 C49 36.4 47 36.6 44.6 35.6 Z" fill="#9b7d55"/>
+  ${noPortrait(`<path d="M39 31 C39 45 44 50 50 50 C56 50 61 45 61 31 C57 37 43 37 39 31 Z" fill="${hair}" ${S(0.8)}/>
+  <path d="M44.6 35.6 C47 34 49 34.6 50 35.4 C51 34.6 53 34 55.4 35.6 C53 36.6 51 36.4 50 36.2 C49 36.4 47 36.6 44.6 35.6 Z" fill="#9b7d55"/>`)}
   <path d="M38 47 Q50 64 62 47" fill="none" stroke="${WHITE}" stroke-width="1.8"/>
   <path d="M38 47 Q50 64 62 47" fill="none" stroke="${INK}" stroke-width=".4"/>
   <rect x="45" y="55" width="10" height="9" rx="1.5" fill="${YELLOW}" ${S(0.7)}/>
@@ -108,11 +121,11 @@ function jack(p, mark) {
   <path d="M11 75 C14 69 21 66 29 68 L27 75 Z M89 75 C86 69 79 66 71 68 L73 75 Z" fill="${p.trim === GREEN ? BLUE : p.trim}" ${S(0.8)}/>
   <path d="M40 46 L60 46 L58 75 L42 75 Z" fill="${p.coat === BLUE ? LIGHT : p.coat}" ${S(0.9)}/>
   <rect x="48" y="51" width="4" height="24" fill="${YELLOW}" ${S(0.5)}/>
-  <path d="M34 19 C29 29 30 41 36 46 L41 31 Z M66 19 C71 29 70 41 64 46 L59 31 Z" fill="${hair}" ${S(0.8)}/>
+  ${noPortrait(`<path d="M34 19 C29 29 30 41 36 46 L41 31 Z M66 19 C71 29 70 41 64 46 L59 31 Z" fill="${hair}" ${S(0.8)}/>`)}
   <path d="M39 45 L50 50 L61 45 L59 41 L41 41 Z" fill="${WHITE}" ${S(0.8)}/>
   ${head({ hair: '#a8864e' })}
-  <path d="M43 34 C46 32 48.6 32.6 50 33.8 C51.4 32.6 54 32 57 34 C54 35.4 52 35.2 50 34.8 C48 35.2 46 35.4 43 34 Z" fill="${hair}" ${S(0.4)}/>
-  <path d="M47.6 37.6 L50 45 L52.4 37.6 Z" fill="${hair}" ${S(0.4)}/>
+  ${noPortrait(`<path d="M43 34 C46 32 48.6 32.6 50 33.8 C51.4 32.6 54 32 57 34 C54 35.4 52 35.2 50 34.8 C48 35.2 46 35.4 43 34 Z" fill="${hair}" ${S(0.4)}/>
+  <path d="M47.6 37.6 L50 45 L52.4 37.6 Z" fill="${hair}" ${S(0.4)}/>`)}
   <path d="M31 18 C28 7 67 4 71 13 C65 19 38 20 31 18 Z" fill="${BLUE}" ${S(0.9)}/>
   <path d="M32 17 C42 20.4 61 19.4 70 14" fill="none" stroke="${RED}" stroke-width="2.2"/>
   <path d="M64 12 C69 2 77 3 76 17 C73 10 69 9.6 64 12 Z" fill="${RED}" ${S(0.7)}/>
@@ -134,10 +147,10 @@ function ober(p, mark) {
   <path d="M11 75 C13 57 24 48 35 46 L65 46 C76 48 87 57 89 75 Z" fill="${p.cape}" ${S(1)}/>
   <path d="M36 46 L64 46 L61 75 L39 75 Z" fill="${p.coat}" ${S(0.9)}/>
   <g fill="${YELLOW}" ${S(0.4)}><circle cx="50" cy="56" r="1.6"/><circle cx="50" cy="63" r="1.6"/><circle cx="50" cy="70" r="1.6"/></g>
-  <path d="M34 19 C29 29 30 41 36 46 L41 31 Z M66 19 C71 29 70 41 64 46 L59 31 Z" fill="${hair}" ${S(0.8)}/>
+  ${noPortrait(`<path d="M34 19 C29 29 30 41 36 46 L41 31 Z M66 19 C71 29 70 41 64 46 L59 31 Z" fill="${hair}" ${S(0.8)}/>`)}
   <path d="M38 45 L50 51 L62 45 L60 40 L40 40 Z" fill="${WHITE}" ${S(0.8)}/>
   ${head({ hair })}
-  <path d="M41 32 C41 42 45 46 50 46 C55 46 59 42 59 32 C56 37 44 37 41 32 Z" fill="${hair}" ${S(0.6)}/>
+  ${noPortrait(`<path d="M41 32 C41 42 45 46 50 46 C55 46 59 42 59 32 C56 37 44 37 41 32 Z" fill="${hair}" ${S(0.6)}/>`)}
   <ellipse cx="50" cy="16.4" rx="23" ry="4.6" fill="${p.cape === GREEN ? RED : GREEN}" ${S(0.9)}/>
   <path d="M37 16 C37 5 63 5 63 16 Z" fill="${p.cape === GREEN ? RED : GREEN}" ${S(0.9)}/>
   <path d="M37.4 14 C44 16.4 56 16.4 62.6 14" fill="none" stroke="${YELLOW}" stroke-width="2"/>
@@ -150,15 +163,19 @@ function ober(p, mark) {
 }
 
 // rank: 5 = Bauer/Under, 6 = Dame/Ober, 7 = König. mark(x, y, size) zeichnet das Farbzeichen.
-export function figureSVG(rank, suit, style, mark) {
+// portrait: Data-URL eines Fotos für den Kopf oder null.
+export function figureSVG(rank, suit, style, mark, portrait = null) {
   const p = PALETTES[suit];
   let draw;
   if (rank === 7) draw = king;
   else if (rank === 6) draw = style === 'de' ? ober : queen;
   else draw = jack;
-  const half = draw(p, mark);
+  PORTRAIT = portrait;
+  const top = draw(p, mark);
+  const bottom = draw(p, mark); // eigene clipPath-IDs für die gedrehte Hälfte
+  PORTRAIT = null;
   return `<svg class="figure" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true">
-    <g>${half}</g><g transform="rotate(180 50 75)">${half}</g>
+    <g>${top}</g><g transform="rotate(180 50 75)">${bottom}</g>
     <line x1="2" y1="75" x2="98" y2="75" stroke="${INK}" stroke-width="1"/>
   </svg>`;
 }

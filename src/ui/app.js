@@ -3,11 +3,12 @@ import { VERSION, APP_NAME } from '../version.js';
 import { createGame, startRound, gameChoose, gamePlay, roundMultiplier, DEFAULT_SETTINGS } from '../core/game.js';
 import { viewFor, currentLegalMoves, PUSH } from '../core/round.js';
 import { OBE, UNDE, multiplier, modeName, sortHand, SUIT_NAMES } from '../core/cards.js';
-import { cardElement, backElement, suitIcon, suitClass } from './cards-view.js';
+import { cardElement, backElement, suitIcon, suitClass, setPortraits } from './cards-view.js';
 
 const NAMES = ['Du', 'Ruedi', 'Vreni', 'Heidi'];
 const STORE_GAME = 'hansis-jass-game';
 const STORE_SETTINGS = 'hansis-jass-settings';
+const STORE_PORTRAITS = 'hansis-jass-portraits';
 const SPEEDS = { langsam: 1.6, normal: 1, schnell: 0.5 };
 
 const $ = (id) => document.getElementById(id);
@@ -570,13 +571,23 @@ function showSettings() {
     <div class="setting"><span>Jassteppich</span>${seg('felt', [['gruen', 'Grün'], ['blau', 'Blau'], ['rot', 'Bordeaux'], ['schwarz', 'Anthrazit']], s.felt)}</div>
     <div class="setting"><span>Spielstärke</span>${seg('level', [['stark', 'Stark'], ['mittel', 'Mittel']], s.level)}</div>
     <div class="setting"><span>Tempo</span>${seg('speed', [['langsam', 'Langsam'], ['normal', 'Normal'], ['schnell', 'Schnell']], s.speed)}</div>
+    <h3>Portraits</h3>
+    <div class="setting"><span>Portraits auf den Bildkarten<span class="hint">Fotos bleiben nur auf diesem Gerät</span></span>${seg('portraitsOn', [[true, 'Ein'], [false, 'Aus']], portraits.enabled)}</div>
+    ${portraitRows()}
     <div class="actions"><button class="btn" id="btn-close">Fertig</button></div>`);
+  bindPortraitRows(el);
   el.querySelectorAll('.seg').forEach((g) => {
     g.onclick = (e) => {
       const b = e.target.closest('button');
       if (!b) return;
       const key = g.dataset.key;
       let v = b.dataset.v;
+      if (key === 'portraitsOn') {
+        portraits.enabled = v === 'true';
+        savePortraits();
+        g.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+        return;
+      }
       if (key === 'target') v = +v;
       if (key === 'multipliers') v = v === 'true';
       settings[key] = v;
@@ -592,6 +603,88 @@ function showSettings() {
     };
   });
   el.querySelector('#btn-close').onclick = closeOverlay;
+}
+
+// ---------------- Portraits ----------------
+// Fotos werden verkleinert, auf das Seitenverhältnis des Kopfes zugeschnitten und nur lokal
+// (localStorage) gespeichert. Sie gelten für alle vier Farben der jeweiligen Figur.
+let portraits = loadPortraits();
+setPortraits(portraits);
+
+function loadPortraits() {
+  try {
+    return { enabled: false, ...JSON.parse(localStorage.getItem(STORE_PORTRAITS) || '{}') };
+  } catch {
+    return { enabled: false };
+  }
+}
+function savePortraits() {
+  try {
+    localStorage.setItem(STORE_PORTRAITS, JSON.stringify(portraits));
+  } catch {
+    alert('Das Foto konnte nicht gespeichert werden (Speicher voll?).');
+  }
+  setPortraits(portraits);
+  renderAll();
+}
+
+const FIGURES = () => (style() === 'de'
+  ? [[5, 'Under'], [6, 'Ober'], [7, 'König']]
+  : [[5, 'Bauer'], [6, 'Dame'], [7, 'König']]);
+
+function portraitRows() {
+  return FIGURES().map(([rank, name]) => {
+    const img = portraits[rank];
+    return `<div class="setting portrait-row"><span>${name}</span><div class="pr">
+      ${img ? `<img class="pv" src="${img}" alt="">` : '<span class="pv empty">–</span>'}
+      <label class="btn secondary small">Foto wählen<input type="file" accept="image/*" data-rank="${rank}" hidden></label>
+      ${img ? `<button class="btn ghost small dark" data-remove="${rank}">Entfernen</button>` : ''}
+    </div></div>`;
+  }).join('');
+}
+
+function bindPortraitRows(el) {
+  el.querySelectorAll('input[type=file]').forEach((input) => {
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      try {
+        portraits[input.dataset.rank] = await makePortrait(file);
+        portraits.enabled = true;
+        savePortraits();
+      } catch (err) {
+        alert('Dieses Bild konnte nicht gelesen werden.');
+      }
+      showSettings();
+    };
+  });
+  el.querySelectorAll('[data-remove]').forEach((b) => {
+    b.onclick = () => {
+      delete portraits[b.dataset.remove];
+      savePortraits();
+      showSettings();
+    };
+  });
+}
+
+async function makePortrait(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const W = 260, H = 320; // Seitenverhältnis der Kopf-Ellipse (15.6 : 19.2)
+    let sw = img.naturalWidth * 0.88, sh = sw * H / W; // etwas enger aufs Gesicht
+    if (sh > img.naturalHeight) { sh = img.naturalHeight; sw = sh * W / H; }
+    const sx = (img.naturalWidth - sw) / 2;
+    const sy = (img.naturalHeight - sh) * 0.3; // Gesicht ist meist etwas oberhalb der Mitte
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+    return canvas.toDataURL('image/jpeg', 0.85);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 function showRules() {
