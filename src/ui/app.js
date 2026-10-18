@@ -1,5 +1,6 @@
 // Oberfläche und Spielablauf von Hansis Jass.
 import { VERSION, APP_NAME } from '../version.js';
+import { tafelHalves } from './tafel.js';
 import { createGame, startRound, gameChoose, gamePlay, roundMultiplier, DEFAULT_SETTINGS } from '../core/game.js';
 import { viewFor, currentLegalMoves, PUSH } from '../core/round.js';
 import { OBE, UNDE, multiplier, modeName, sortHand, SUIT_NAMES } from '../core/cards.js';
@@ -187,7 +188,7 @@ function renderRoundPoints() {
   const el = $('roundpts');
   if (!r || r.mode === null) { el.textContent = ''; return; }
   const won = [0, 1].map((t) => r.tricks.filter((x) => x.winner % 2 === t).length);
-  el.textContent = `Diese Runde – Wir: ${r.cardPoints[0]} (${won[0]} Stiche) · Gegner: ${r.cardPoints[1]} (${won[1]} Stiche)`;
+  el.innerHTML = `Diese Runde<br>Wir: ${r.cardPoints[0]} (${won[0]} Stiche)<br>Gegner: ${r.cardPoints[1]} (${won[1]} Stiche)`;
 }
 
 function renderAll() {
@@ -471,9 +472,9 @@ async function loop() {
 }
 
 // ---------------- Overlays ----------------
-function overlay(html) {
+function overlay(html, cls = '') {
   const el = $('overlay');
-  el.innerHTML = `<div class="panel">${html}</div>`;
+  el.innerHTML = `<div class="panel ${cls}">${html}</div>`;
   el.hidden = false;
   return el;
 }
@@ -485,8 +486,9 @@ function showRoundSummary() {
   const m = modeLabel(h.mode);
   const row = (label, a, b) => `<tr><td>${label}</td><td class="us">${a}</td><td class="them">${b}</td></tr>`;
   const t = h.teams;
-  const html = `<h2>Runde ${game.roundNo}: ${m.sym} ${m.name}${h.multiplier > 1 ? ` ×${h.multiplier}` : ''}</h2>
+  const html = `<h2>Runde ${game.roundNo}: ${m.name}${h.multiplier > 1 ? ` ×${h.multiplier}` : ''}</h2>
     <p class="muted">Angesagt von ${NAMES[h.chooser]}${h.pushed ? ' nach Schieben' : ''}${h.match ? ' · <b>Match!</b>' : ''}</p>
+    <div class="tafel-grid"><div>
     <table>
       <tr><th></th><th>Wir</th><th>Gegner</th></tr>
       ${row('Stiche', t[0].tricks, t[1].tricks)}
@@ -495,9 +497,10 @@ function showRoundSummary() {
       ${t[0].stoeck || t[1].stoeck ? row('Stöck', t[0].stoeck, t[1].stoeck) : ''}
       ${h.multiplier > 1 ? row(`× ${h.multiplier}`, h.totals[0], h.totals[1]) : ''}
       <tr class="total"><td>Stand</td><td class="us">${game.scores[0]}</td><td class="them">${game.scores[1]}</td></tr>
-    </table>
-    <div class="actions"><button class="btn" id="btn-next">Nächste Runde</button></div>`;
-  const el = overlay(html);
+    </table></div>
+    <div class="halves">${tafelHalves(game.scores, game.settings.target)}</div></div>
+    <div class="actions"><button class="btn chalk-btn" id="btn-next">Nächste Runde</button></div>`;
+  const el = overlay(html, 'tafel');
   return new Promise((resolve) => {
     el.querySelector('#btn-next').onclick = () => { closeOverlay(); resolve(); };
   });
@@ -506,11 +509,10 @@ function showRoundSummary() {
 function showGameEnd() {
   const won = game.winner === 0;
   const el = overlay(`<h2>Partie beendet</h2>
-    <div class="big-result">${won ? '🎉 Gewonnen!' : 'Verloren'}</div>
-    <table><tr><th></th><th>Wir</th><th>Gegner</th></tr>
-    <tr class="total"><td>Schlussstand</td><td class="us">${game.scores[0]}</td><td class="them">${game.scores[1]}</td></tr></table>
+    <div class="big-result">${won ? 'Gewonnen!' : 'Verloren'}</div>
+    <div class="halves wide">${tafelHalves(game.scores, game.settings.target)}</div>
     <p class="muted">${game.history.length} Runden · Ziel ${game.settings.target}</p>
-    <div class="actions"><button class="btn" id="btn-new">Neue Partie</button></div>`);
+    <div class="actions"><button class="btn chalk-btn" id="btn-new">Neue Partie</button></div>`, 'tafel');
   return new Promise((resolve) => {
     el.querySelector('#btn-new').onclick = () => { closeOverlay(); newGame(); resolve(); };
   });
@@ -536,6 +538,22 @@ $('btn-last').addEventListener('click', () => {
 });
 
 $('btn-menu').addEventListener('click', showMenu);
+$('scores').addEventListener('click', showTafel);
+
+// Die ganze Jasstafel: Z mit Strichen für beide Teams und alle bisherigen Runden
+function showTafel() {
+  const rows = game.history.filter((h) => !h.aborted).map((h, i) => {
+    const m = modeLabel(h.mode);
+    return `<tr><td>${i + 1}. ${m.name}${h.multiplier > 1 ? ` ×${h.multiplier}` : ''}${h.match ? ' · Match' : ''}</td><td class="us">${h.totals[0]}</td><td class="them">${h.totals[1]}</td></tr>`;
+  }).join('');
+  const el = overlay(`<h2>Jasstafel</h2>
+    <div class="tafel-grid">
+      <div class="halves">${tafelHalves(game.scores, game.settings.target)}</div>
+      <div class="rounds">${rows ? `<table><tr><th>Runde</th><th>Wir</th><th>Gegner</th></tr>${rows}</table>` : '<p class="muted">Noch keine Runde gespielt.</p>'}</div>
+    </div>
+    <div class="actions"><button class="btn chalk-btn" id="btn-close">Schliessen</button></div>`, 'tafel');
+  el.querySelector('#btn-close').onclick = closeOverlay;
+}
 
 function showMenu() {
   const el = overlay(`<h2>${APP_NAME}</h2>
@@ -748,6 +766,24 @@ function setupUpdates() {
   }).catch(() => {});
 }
 
+// Feine Linien, die den Teppich von den Ecken zur Mitte vierteln (Mitte = Stichmitte bei 45 %).
+function drawQuarters() {
+  const svg = $('quarters');
+  const W = window.innerWidth, H = window.innerHeight;
+  const cx = W / 2, cy = H * 0.45;
+  const emblem = $('emblem').getBoundingClientRect();
+  const stop = emblem.width * 0.47; // äusserer Kreis des Emblems
+  const inset = 22;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  let html = '';
+  for (const [x, y] of [[inset, inset], [W - inset, inset], [W - inset, H - inset], [inset, H - inset]]) {
+    const dx = cx - x, dy = cy - y, len = Math.hypot(dx, dy);
+    const ex = cx - (dx / len) * stop, ey = cy - (dy / len) * stop;
+    html += `<line class="shadow" x1="${x}" y1="${y + 1}" x2="${ex}" y2="${ey + 1}"/><line x1="${x}" y1="${y}" x2="${ex}" y2="${ey}"/>`;
+  }
+  svg.innerHTML = html;
+}
+
 function applyFelt() {
   document.documentElement.dataset.felt = settings.felt || 'gruen';
 }
@@ -764,7 +800,8 @@ function init() {
   }
   renderAll();
   runLoop();
-  window.addEventListener('resize', () => renderHand());
+  drawQuarters();
+  window.addEventListener('resize', () => { renderHand(); drawQuarters(); });
   setupUpdates();
 }
 

@@ -1,5 +1,15 @@
 # Changelog – Hansis Jass
 
+## 1.50 – 2026-10-18
+
+- Zahlen 6–10 stehen in den vier Eckzeichen der Zahlenkarten (unten aufrecht lesbar).
+- Deutschschweizer Kartenbild: Symbole hatten eine falsche Grösse – korrigiert.
+- Jasstafel mit Kreide: kleine Schiefertafel oben links (antippen für die ganze Tafel),
+  pro Team das „Z“ mit Strichen (100 oben, 50 als X auf der Diagonale, 20 unten, Rest als Zahl),
+  Rundenliste; Rundenabrechnung und Partieende ebenfalls als Tafel.
+- Jassteppich mit feinen Linien geviertelt; jeder legt seine Karte in sein Viertel
+  (wie im Samschtig-Jass).
+
 ## 1.40 – 2026-10-18
 
 - Der Bauer zeigt von Anfang an Hansis Portrait (Standard-Portrait, `assets/portraits/bauer.jpg`,

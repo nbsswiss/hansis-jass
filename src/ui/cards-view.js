@@ -19,7 +19,7 @@ const SHAPES = [
 
 // Portraits für die Bildkarten: { enabled, 5: dataUrl (Bauer), 6: (Dame), 7: (König) }.
 // Fehlt ein Eintrag, gilt das Standard-Portrait (Bauer = Hansi); null = bewusst entfernt.
-export const DEFAULT_PORTRAITS = { 5: 'assets/portraits/bauer.jpg' };
+export const DEFAULT_PORTRAITS = { 5: new URL('../../assets/portraits/bauer.jpg', import.meta.url).href };
 let portraits = { enabled: true };
 export function setPortraits(p) { portraits = p || { enabled: true }; }
 export function portraitImage(rank) {
@@ -51,7 +51,8 @@ export function suitIcon(s, style, cls = 'suit-icon') {
 // Ein Pip: Mittelpunkt x/y in % der Karte, size in Kartenbreiten, rot = auf dem Kopf
 function pip(s, style, x, y, size, rot = false, label = '') {
   const lbl = label ? `<b class="lbl">${label}</b>` : '';
-  return `<span class="pip${rot ? ' rot' : ''}" style="left:${x}%;top:${y}%;width:${size}em;height:${size}em">${suitIcon(s, style, 'shape')}${lbl}</span>`;
+  // font-size = Pip-Grösse: alles im Pip (Symbol, Zahl) rechnet in em relativ dazu
+  return `<span class="pip${rot ? ' rot' : ''}" style="left:${x}%;top:${y}%;font-size:${size}em">${suitIcon(s, style, 'shape')}${lbl}</span>`;
 }
 
 const L = 27, C = 50, R = 73;
@@ -74,9 +75,13 @@ export function cardElement(c, style = 'fr') {
   let html = '';
   if (r <= 4) {
     const { size, pts } = NUMBER_LAYOUT[r];
+    // Wert in den vier Eckzeichen (oberste und unterste Reihe), wie bei der Zehn auf echten Karten
+    const ys = pts.map(([, y]) => y);
+    const top = Math.min(...ys), bottom = Math.max(...ys);
+    const label = String(r + 6);
     html = pts.map(([x, y]) => {
-      const corner = r === 4 && (y === 14 || y === 86);
-      return pip(s, style, x, y, size, y > 50, corner ? '10' : '');
+      const corner = x !== C && (y === top || y === bottom);
+      return pip(s, style, x, y, size, y > 50, corner ? label : '');
     }).join('');
   } else if (r === 8) {
     html = pip(s, style, 16, 10, 0.11) + pip(s, style, 84, 10, 0.11)
