@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="de-CH">
+<head><meta charset="utf-8"><title>Tests – Hansis Jass</title>
+<style>body{font:15px/1.5 -apple-system,sans-serif;padding:20px;white-space:pre-wrap}</style></head>
+<body>
+<h1>Tests</h1>
+<div id="out"></div>
+<script type="module">
+  const out = document.getElementById('out');
+  const orig = console.log;
+  console.log = (m) => { out.textContent += m + '\n'; orig(m); };
+  const { run } = await import('./testlib.js');
+  await import('./core.test.js');
+  await import('./ai.test.js');
+  await run();
+</script>
+</body>
+</html>

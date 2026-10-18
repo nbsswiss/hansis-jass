@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Hansis Jass">
+  <meta name="theme-color" content="#0b3d24">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="stylesheet" href="src/ui/styles.css">
+  <title>Hansis Jass</title>
+</head>
+<body>
+  <main id="table">
+    <header id="topbar">
+      <div id="scores">
+        <div class="team" data-team="0">
+          <div class="trow"><span class="tname">Wir</span><span class="tpts" id="score0">0</span></div>
+          <div class="bar"><i id="bar0"></i></div>
+        </div>
+        <div class="team" data-team="1">
+          <div class="trow"><span class="tname">Gegner</span><span class="tpts" id="score1">0</span></div>
+          <div class="bar"><i id="bar1"></i></div>
+        </div>
+        <div id="target"></div>
+      </div>
+      <div id="modeinfo"></div>
+      <div id="buttons">
+        <button id="btn-last" class="btn ghost" disabled>Letzter Stich</button>
+        <button id="btn-menu" class="btn ghost icon" aria-label="Menü">☰</button>
+      </div>
+    </header>
+
+    <section class="seat" id="seat2"></section>
+    <section class="seat side" id="seat3"></section>
+    <section class="seat side" id="seat1"></section>
+
+    <div id="trick">
+      <div class="slot" data-seat="0"></div>
+      <div class="slot" data-seat="1"></div>
+      <div class="slot" data-seat="2"></div>
+      <div class="slot" data-seat="3"></div>
+    </div>
+    <div id="roundpts"></div>
+
+    <section id="me">
+      <div id="me-label" class="plabel"></div>
+      <div id="hand"></div>
+      <button id="btn-tip" class="btn tip" hidden>Tipp</button>
+    </section>
+    <div id="tipbox" hidden></div>
+
+    <div id="chooser" hidden></div>
+    <div id="banner" hidden></div>
+    <div id="overlay" hidden></div>
+  </main>
+  <div id="rotate"><div>🔄<br>Bitte das iPad quer halten</div></div>
+  <script type="module" src="src/ui/app.js"></script>
+</body>
+</html>
