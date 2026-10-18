@@ -618,6 +618,25 @@ async function runLoop() {
   }
 }
 
+// Updates: beim Start und jedes Mal, wenn die App wieder in den Vordergrund kommt, nach einer
+// neuen Version fragen. Übernimmt ein neuer Service Worker, wird einmal neu geladen
+// (der Spielstand ist nach jeder Aktion gespeichert).
+function setupUpdates() {
+  if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloading) return;
+    reloading = true;
+    location.reload();
+  });
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
+    const check = () => reg.update().catch(() => {});
+    check();
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+  }).catch(() => {});
+}
+
 function applyFelt() {
   document.documentElement.dataset.felt = settings.felt || 'gruen';
 }
@@ -635,9 +654,7 @@ function init() {
   renderAll();
   runLoop();
   window.addEventListener('resize', () => renderHand());
-  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  }
+  setupUpdates();
 }
 
 init();

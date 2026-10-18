@@ -1,6 +1,6 @@
 // Service Worker: macht die App offline spielbar.
 // CACHE_VERSION bei jeder neuen Version an src/version.js angleichen (siehe CLAUDE.md).
-const CACHE_VERSION = '1.10';
+const CACHE_VERSION = '1.11';
 const CACHE = `hansis-jass-${CACHE_VERSION}`;
 const FILES = [
   './', 'index.html', 'manifest.webmanifest',
@@ -12,8 +12,13 @@ const FILES = [
   'src/ui/app.js', 'src/ui/cards-view.js', 'src/ui/faces.js', 'src/ui/styles.css',
 ];
 
+// Beim Installieren am Browser-Cache vorbei laden (GitHub Pages erlaubt sonst 10 Minuten alte Dateien).
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE)
+      .then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -24,16 +29,22 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Zuerst Netz (damit neue Versionen sofort ankommen), offline aus dem Cache.
+// Zuerst Netz, und zwar immer beim Server nachfragen (no-cache), damit neue Versionen sofort
+// ankommen. Ohne Netz aus dem Cache.
 self.addEventListener('fetch', (e) => {
-  if (e.request.method !== 'GET') return;
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const sameOrigin = new URL(req.url).origin === self.location.origin;
+  const network = sameOrigin ? fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }) : fetch(req);
   e.respondWith(
-    fetch(e.request)
+    network
       .then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(e.request, copy));
+        if (res.ok && sameOrigin) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(req.url, copy));
+        }
         return res;
       })
-      .catch(() => caches.match(e.request, { ignoreSearch: true })),
+      .catch(() => caches.match(req.url, { ignoreSearch: true }).then((r) => r || caches.match('index.html'))),
   );
 });

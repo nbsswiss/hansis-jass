@@ -1,5 +1,12 @@
 # Changelog – Hansis Jass
 
+## 1.11 – 2026-10-18
+
+- Updates kommen sofort aufs iPad: Der Service Worker fragt immer beim Server nach
+  (statt bis zu 10 Minuten alte Dateien aus dem Browser-Cache zu nehmen), die App sucht beim
+  Start und beim Zurückkehren in den Vordergrund nach einer neuen Version und lädt sich
+  dann einmal automatisch neu.
+
 ## 1.10 – 2026-10-18
 
 - Bildkarten mit gezeichneten Figuren statt Buchstaben: König, Dame, Bauer
