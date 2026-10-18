@@ -17,10 +17,15 @@ const SHAPES = [
   '<circle cx="50" cy="27" r="21"/><circle cx="27.5" cy="55" r="21"/><circle cx="72.5" cy="55" r="21"/><path d="M42 40 H58 V62 H42 Z"/><path d="M50 50 C52 76 58 88 70 97 L30 97 C42 88 48 76 50 50 Z"/>',
 ];
 
-// Portraits für die Bildkarten: { enabled, 5: dataUrl (Bauer), 6: (Dame), 7: (König) }
-let portraits = { enabled: false };
-export function setPortraits(p) { portraits = p || { enabled: false }; }
-const portraitFor = (rank) => (portraits.enabled && portraits[rank]) || null;
+// Portraits für die Bildkarten: { enabled, 5: dataUrl (Bauer), 6: (Dame), 7: (König) }.
+// Fehlt ein Eintrag, gilt das Standard-Portrait (Bauer = Hansi); null = bewusst entfernt.
+export const DEFAULT_PORTRAITS = { 5: 'assets/portraits/bauer.jpg' };
+let portraits = { enabled: true };
+export function setPortraits(p) { portraits = p || { enabled: true }; }
+export function portraitImage(rank) {
+  return rank in portraits ? portraits[rank] : DEFAULT_PORTRAITS[rank] || null;
+}
+const portraitFor = (rank) => (portraits.enabled ? portraitImage(rank) : null);
 
 // Deutschschweizer Farben als Bildzeichen
 const DE_SYMBOLS = ['🔔', '🌹', '🛡️', '🌰'];

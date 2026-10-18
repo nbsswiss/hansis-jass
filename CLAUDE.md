@@ -82,5 +82,8 @@ Dann `http://localhost:8080` öffnen.
 
 - In den Einstellungen kann pro Figur (Bauer/Under, Dame/Ober, König) ein Foto gewählt werden;
   es ersetzt den gezeichneten Kopf auf allen vier Farben und lässt sich ein- und ausschalten.
-- Fotos werden auf dem Gerät verkleinert und **nur lokal** gespeichert (localStorage
-  `hansis-jass-portraits`). Keine Familienfotos ins Repository legen: es ist öffentlich.
+- Selbst gewählte Fotos werden auf dem Gerät verkleinert und **nur lokal** gespeichert
+  (localStorage `hansis-jass-portraits`).
+- Ausnahme auf ausdrücklichen Wunsch von Hansi: Sein Portrait liegt als Standard für den Bauer
+  in `assets/portraits/bauer.jpg` (öffentlich, Metadaten entfernt). Weitere Familienfotos nur
+  auf ausdrücklichen Wunsch ins Repository legen – es ist öffentlich.

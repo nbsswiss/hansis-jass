@@ -1,5 +1,11 @@
 # Changelog – Hansis Jass
 
+## 1.40 – 2026-10-18
+
+- Der Bauer zeigt von Anfang an Hansis Portrait (Standard-Portrait, `assets/portraits/bauer.jpg`,
+  ohne Foto-Metadaten). In den Einstellungen: eigenes Foto wählen, „Entfernen“ (dann der
+  gezeichnete Kopf) oder „Standard“ (zurück zu Hansis Portrait); Schalter Ein/Aus bleibt.
+
 ## 1.31 – 2026-10-18
 
 - Portraits sind standardmässig eingeschaltet (Schalter in den Einstellungen bleibt).

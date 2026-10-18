@@ -3,7 +3,7 @@ import { VERSION, APP_NAME } from '../version.js';
 import { createGame, startRound, gameChoose, gamePlay, roundMultiplier, DEFAULT_SETTINGS } from '../core/game.js';
 import { viewFor, currentLegalMoves, PUSH } from '../core/round.js';
 import { OBE, UNDE, multiplier, modeName, sortHand, SUIT_NAMES } from '../core/cards.js';
-import { cardElement, backElement, suitIcon, suitClass, setPortraits } from './cards-view.js';
+import { cardElement, backElement, suitIcon, suitClass, setPortraits, portraitImage, DEFAULT_PORTRAITS } from './cards-view.js';
 
 const NAMES = ['Du', 'Ruedi', 'Vreni', 'Heidi'];
 const STORE_GAME = 'hansis-jass-game';
@@ -634,11 +634,14 @@ const FIGURES = () => (style() === 'de'
 
 function portraitRows() {
   return FIGURES().map(([rank, name]) => {
-    const img = portraits[rank];
-    return `<div class="setting portrait-row"><span>${name}</span><div class="pr">
+    const img = portraitImage(rank);
+    const isDefault = img && !(rank in portraits);
+    const canRestore = DEFAULT_PORTRAITS[rank] && portraits[rank] !== undefined && portraits[rank] !== DEFAULT_PORTRAITS[rank];
+    return `<div class="setting portrait-row"><span>${name}${isDefault ? '<span class="hint">Standard</span>' : ''}</span><div class="pr">
       ${img ? `<img class="pv" src="${img}" alt="">` : '<span class="pv empty">–</span>'}
       <label class="btn secondary small">Foto wählen<input type="file" accept="image/*" data-rank="${rank}" hidden></label>
       ${img ? `<button class="btn ghost small dark" data-remove="${rank}">Entfernen</button>` : ''}
+      ${canRestore ? `<button class="btn ghost small dark" data-restore="${rank}">Standard</button>` : ''}
     </div></div>`;
   }).join('');
 }
@@ -660,7 +663,16 @@ function bindPortraitRows(el) {
   });
   el.querySelectorAll('[data-remove]').forEach((b) => {
     b.onclick = () => {
-      delete portraits[b.dataset.remove];
+      // null merken, damit auch ein Standard-Portrait weg bleibt
+      if (DEFAULT_PORTRAITS[b.dataset.remove]) portraits[b.dataset.remove] = null;
+      else delete portraits[b.dataset.remove];
+      savePortraits();
+      showSettings();
+    };
+  });
+  el.querySelectorAll('[data-restore]').forEach((b) => {
+    b.onclick = () => {
+      delete portraits[b.dataset.restore];
       savePortraits();
       showSettings();
     };

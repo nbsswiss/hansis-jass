@@ -13,7 +13,7 @@
 <div id="fr"></div><div id="de"></div>
 <script type="module">
   import { cardElement, setPortraits } from '../src/ui/cards-view.js';
-  try { setPortraits(JSON.parse(localStorage.getItem('hansis-jass-portraits') || 'null')); } catch { /* keine */ }
+  try { setPortraits({ enabled: true, ...JSON.parse(localStorage.getItem('hansis-jass-portraits') || '{}') }); } catch { /* keine */ }
   for (const style of ['fr', 'de']) {
     const box = document.getElementById(style);
     for (let s = 0; s < 4; s++) {

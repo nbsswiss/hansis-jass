@@ -1,10 +1,11 @@
 // Service Worker: macht die App offline spielbar.
 // CACHE_VERSION bei jeder neuen Version an src/version.js angleichen (siehe CLAUDE.md).
-const CACHE_VERSION = '1.31';
+const CACHE_VERSION = '1.40';
 const CACHE = `hansis-jass-${CACHE_VERSION}`;
 const FILES = [
   './', 'index.html', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
+  'assets/portraits/bauer.jpg',
   'src/version.js',
   'src/core/cards.js', 'src/core/rules.js', 'src/core/weis.js', 'src/core/round.js', 'src/core/game.js', 'src/core/rng.js',
   'src/ai/worker.js', 'src/ai/player.js', 'src/ai/knowledge.js', 'src/ai/sampler.js', 'src/ai/search.js',
