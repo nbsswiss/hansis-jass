@@ -1,6 +1,6 @@
 // Strategieregeln (docs/strategie.md): kleine Zuschläge in Punkten, die bei fast gleich guten
 // Karten den Ausschlag geben, und eine kurze Begründung für den Tipp an die Spielerin.
-import { suitOf, rankOf, points, strength, RA, R10, UNDE, SUIT_SYMBOLS } from '../core/cards.js';
+import { suitOf, rankOf, points, strength, power, RA, R10, UNDE, SUIT_SYMBOLS } from '../core/cards.js';
 import { winningIndex } from '../core/rules.js';
 import { bockOf, signalMeaning, schmierMin } from './knowledge.js';
 
@@ -36,10 +36,37 @@ function context(view, k, c) {
   return { me, partner, mode, leading, led, s, trump, discard, partnerWinning, schmier, firstDiscard };
 }
 
+// Kann die Karte der Partnerin im laufenden Stich noch geschlagen werden? Sicher ist sie,
+// wenn alle stärkeren Karten schon gespielt sind oder in der eigenen Hand liegen.
+function partnerSafe(view, k) {
+  const mode = view.mode;
+  const led = suitOf(view.trick[0]);
+  const wi = winningIndex(view.trick, mode);
+  const top = power(view.trick[wi], mode, led);
+  const later = 3 - view.trick.length; // Spieler nach mir
+  if (later === 0) return true;
+  for (let c = 0; c < 36; c++) {
+    if (k.played.has(c) || view.hand.includes(c) || view.trick.includes(c)) continue;
+    if (power(c, mode, led) > top) return false;
+  }
+  return true;
+}
+
 export function strategicBonus(view, k, c, convention) {
   const x = context(view, k, c);
   const meaning = signalMeaning(convention);
   let b = 0;
+
+  // Partnerin nicht übertrumpfen, wenn ihr Stich sicher ist; Bauer und Nell nie schmieren
+  if (x.partnerWinning) {
+    const led = suitOf(view.trick[0]);
+    const wi = winningIndex(view.trick, x.mode);
+    const overtakes = power(c, x.mode, led) > power(view.trick[wi], x.mode, led);
+    if (overtakes && partnerSafe(view, k)) {
+      const r = rankOf(c);
+      b -= x.trump ? (r === 5 || r === 3 ? 25 : 8) : 3;
+    }
+  }
 
   if (x.firstDiscard) {
     const st = suitStrength(view, k, x.s);
@@ -68,6 +95,8 @@ export function strategicBonus(view, k, c, convention) {
       const myTeamChose = view.chooser % 2 === x.me % 2;
       if (!myTeamChose) b -= 2.5;
       else if (view.tricks.length < 4) b += 1.5;
+      // Trumpf ziehen: mit dem höchsten Trumpf oder klein – nicht die Trumpf-10 oder das Ass „blank“
+      if (bockOf(x.s, x.mode, k.played) !== c && points(c, x.mode) >= 10) b -= 6;
     }
     const pLead = k.firstLeads[x.partner];
     if (pLead !== null && pLead === x.s && !x.trump && !k.voids[x.partner][x.s]) b += 1.5;
@@ -95,6 +124,10 @@ export function explainMove(view, k, c, convention, style = 'fr') {
     return 'Klein ausspielen';
   }
   if (x.schmier) return 'Schmieren';
+  if (x.partnerWinning && points(c, x.mode) >= schmierMin(x.mode)) {
+    const t0 = view.trick.concat(c);
+    if (winningIndex(t0, x.mode) !== t0.length - 1) return 'Schmieren';
+  }
   if (x.firstDiscard) return meaning === 'want' ? `Anziehen ${sym}` : `Verwerfen ${sym}`;
   const t = view.trick.concat(c);
   const wins = winningIndex(t, x.mode) === t.length - 1;

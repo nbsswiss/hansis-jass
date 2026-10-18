@@ -54,7 +54,8 @@ Vor der Partie wird abgemacht, welche Konvention gilt. Beide Teams spielen mit d
 
 - **Das ansagende Team mit Trumpf zieht Trumpf**: Wer Bauer oder Nell hat und mehrere Trümpfe,
   spielt früh Trumpf, damit die Gegner ihre Nebenfarben nicht stechen können.
-  Mit Bauer zuerst den Bauer, sonst eher klein anspielen und den Nell zurückhalten.
+  Mit dem höchsten noch vorhandenen Trumpf (Bock) ziehen, sonst klein anspielen. Nie die
+  Trumpf-10 oder das Trumpf-Ass „blank“ ausspielen, solange ein höherer Trumpf draussen ist.
 - **Die Gegenpartei spielt kein Trumpf an**, ausser sie will gezielt Trümpfe der Ansager ziehen
   (z. B. weil der eigene Partner die Nebenfarben hält).
 - **Bock ausspielen**: Asse (Obenabe: Asse; Undeufe: 6er) und andere Böcke früh ausspielen,
@@ -70,7 +71,11 @@ Vor der Partie wird abgemacht, welche Konvention gilt. Beide Teams spielen mit d
 - **Schmieren**: Macht die Partnerin den Stich sicher, gibt man die punkteträchtigste Karte zu,
   die man nicht selbst für einen Stich braucht (10er, Ass ohne Bock-Wirkung; Obenabe/Undeufe: 8er).
 - **Billig gewinnen**: Muss man einen Stich holen, nimmt man die tiefste Karte, die sicher gewinnt.
-- **Nicht über die Partnerin stechen**, wenn sie den Stich sowieso macht.
+- **Nicht über die Partnerin stechen**, wenn sie den Stich sowieso macht – erst recht nicht mit
+  Bauer oder Nell. Liegt z. B. der Trumpf-Nell der Partnerin und hat man selbst den Bauer, macht
+  der Nell den Stich sicher: dann eine kleine Karte oder die Trumpf-10 schmieren, den Bauer behalten.
+- **Bauer und Nell werden nie geschmiert.** Sie sind mehr wert als ihre Punkte, weil sie später
+  die Trümpfe der Gegner holen.
 - **Stechen** lohnt sich, wenn viele Punkte im Stich liegen oder der Stich das Spiel
   entscheidet (letzter Stich, Match verhindern).
 - **Wenig zugeben**: Gewinnt der Gegner, gibt man die Karte mit den wenigsten Punkten zu

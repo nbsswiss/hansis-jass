@@ -191,3 +191,28 @@ test('KI spielt nur erlaubte Karten und schlägt Zufallsspieler deutlich', () =>
   }
   ok(ai > rnd * 1.3, `KI ${ai} gegen Zufall ${rnd}`);
 });
+
+test('KI übertrumpft den sicheren Nell der Partnerin nicht mit dem Bauer', () => {
+  // Süd spielt Trumpf-Nell, Nord hat Bauer, 10, 7: der Nell macht den Stich sowieso.
+  const hands = [
+    '♥9 ♥D ♠A ♠K ♦7 ♦8 ♣6 ♣7 ♣10',
+    '♥A ♥6 ♠D ♠7 ♦A ♦K ♣K ♣B ♣9',
+    '♥B ♥10 ♥7 ♠10 ♠9 ♦D ♦B ♣A ♣8',
+    '♥K ♥8 ♠B ♠8 ♠6 ♦10 ♦9 ♦6 ♣D',
+  ];
+  const r = setup(hands, 0, HEART, ['♥9', '♥6']);
+  const res = chooseCardAI(viewFor(r, 2), { convention: 'anziehen' }, FAST);
+  ok(cardShort(res.card) !== '♥B', 'Bauer nicht auf den Nell der Partnerin');
+});
+
+test('KI zieht Trumpf nicht mit der Trumpf-10, wenn der höhere Trumpf noch draussen ist', () => {
+  const hands = [
+    '♥10 ♥7 ♥6 ♠A ♠K ♦A ♦K ♣A ♣K',
+    '♥A ♥8 ♠D ♠7 ♦D ♦B ♣D ♣B ♣9',
+    '♥B ♥9 ♥D ♠10 ♠9 ♦10 ♦9 ♣10 ♣8',
+    '♥K ♠B ♠8 ♠6 ♦8 ♦7 ♦6 ♣7 ♣6',
+  ];
+  const r = setup(hands, 0, HEART);
+  const res = chooseCardAI(viewFor(r, 0), { convention: 'anziehen' }, FAST);
+  ok(cardShort(res.card) !== '♥10', `ausgespielt ${cardShort(res.card)}`);
+});

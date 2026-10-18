@@ -6,9 +6,16 @@ import { suitOf, points, strength, power } from '../core/cards.js';
 import { legalMoves, winningIndex } from '../core/rules.js';
 
 // Wert einer Karte, wenn man sie für später behält.
+// Bauer und Nell sind mehr wert als ihre Punkte: sie holen später die Trümpfe der Gegner
+// und werden darum nie geschmiert (docs/strategie.md, Abschnitt 4).
 export function keepValue(c, mode, st) {
   const s = (c / 9) | 0;
-  if (mode < 4 && s === mode) return 5 + strength(c, mode) * 1.5;
+  if (mode < 4 && s === mode) {
+    const r = c % 9;
+    if (r === 5) return 34; // Bauer
+    if (r === 3) return 26; // Nell
+    return 5 + strength(c, mode) * 1.5 + (isBock(c, mode, st) ? points(c, mode) + 6 : 0);
+  }
   if (isBock(c, mode, st)) return points(c, mode) + 8;
   return 0;
 }
@@ -59,8 +66,22 @@ function chooseFollow(st, seat, legal) {
   let trickPts = 0;
   for (const c of st.trick) trickPts += points(c, mode);
   if (st.nTricks === 8) trickPts += 5;
-  let best = legal[0], bestScore = -1e9;
-  for (const c of legal) {
+  const led = suitOf(st.trick[0]);
+  const wi = winningIndex(st.trick, mode);
+  const partnerWinning = (st.leader + wi) % 4 === (seat + 2) % 4;
+  let candidates = legal;
+  if (partnerWinning) {
+    // Partnerin nicht übertrumpfen/überstechen, wenn ihr Stich auch so sicher ist
+    const top = power(st.trick[wi], mode, led);
+    const under = legal.filter((c) => power(c, mode, led) <= top);
+    const safe = under.some((c) => {
+      const t = st.trick.concat(c);
+      return (t.length === 4 ? ((st.leader + winningIndex(t, mode)) % 4) % 2 : greedyWinnerTeam(st, t, st.leader)) === myTeam;
+    });
+    if (safe) candidates = under;
+  }
+  let best = candidates[0], bestScore = -1e9;
+  for (const c of candidates) {
     const t = st.trick.concat(c);
     // Hand ohne c für die Bewertung, ob nachfolgende Spieler stechen können
     const winTeam = t.length === 4 ? ((st.leader + winningIndex(t, mode)) % 4) % 2 : greedyWinnerTeam(st, t, st.leader);
@@ -92,7 +113,8 @@ function chooseLead(st, seat, legal) {
         score += stab ? -6 : 12 + points(c, mode);
       }
     } else if (trump) {
-      score += st.chooserTeam === myTeam && oppHaveTrump ? 4 : -6;
+      // nicht den höchsten Trumpf: klein anspielen, keine Trumpf-10 und kein Ass
+      score += st.chooserTeam === myTeam && oppHaveTrump ? 4 - points(c, mode) * 0.6 : -6;
     } else {
       // Kleine Karte in eine Farbe, in der die Partnerin den Bock hat
       const pBock = st.hands[partner].some((x) => suitOf(x) === s && isBock(x, mode, st));

@@ -1,5 +1,13 @@
 # Changelog – Hansis Jass
 
+## 1.80 – 2026-10-18
+
+- Spieltaktik verbessert: Die KI übertrumpft einen sicheren Stich der Partnerin nicht mehr
+  (z. B. Bauer auf den Trumpf-Nell), schmiert Bauer und Nell nie und zieht Trumpf mit dem
+  höchsten Trumpf oder klein – nicht mehr mit der Trumpf-10. Zwei neue Tests, Benchmark
+  gegen die alte KI 50,4 % (300 Verteilungen).
+- Karten auf dem Tisch rund 20 % grösser; eigenes Namensschild links neben der Hand.
+
 ## 1.70 – 2026-10-18
 
 - Könige deutlich erkennbar: grosse goldene Zackenkrone mit Perlen und Edelsteinen.
