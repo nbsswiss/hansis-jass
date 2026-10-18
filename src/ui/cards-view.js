@@ -4,6 +4,7 @@
 // Alle Grössen hängen an --cw (Kartenbreite), font-size der Karte = --cw, Pips in em.
 import { suitOf, rankOf, cardName } from '../core/cards.js';
 import { figureSVG } from './faces.js';
+import { deIcon, deShape, deCardInner } from './de-cards.js';
 
 // Farbzeichen als SVG (viewBox 0 0 100 100), Spitze bzw. Stiel wie auf den Karten
 const SHAPES = [
@@ -27,13 +28,7 @@ export function portraitImage(rank) {
 }
 const portraitFor = (rank) => (portraits.enabled ? portraitImage(rank) : null);
 
-// Deutschschweizer Farben als Bildzeichen
-const DE_SYMBOLS = ['🔔', '🌹', '🛡️', '🌰'];
 const COLORS = { red: '#e0202e', black: '#141414', gold: '#b8860b', brown: '#7a4a1e' };
-
-export function suitSymbol(s, style) {
-  return style === 'de' ? DE_SYMBOLS[s] : ['♦', '♥', '♠', '♣'][s];
-}
 
 export function suitClass(s, style) {
   if (style === 'de') return ['gold', 'red', 'black', 'brown'][s];
@@ -44,7 +39,7 @@ export const suitColor = (s, style) => COLORS[suitClass(s, style)];
 
 // Farbzeichen als SVG-Markup (für Knöpfe, Anzeigen und Pips)
 export function suitIcon(s, style, cls = 'suit-icon') {
-  if (style === 'de') return `<span class="${cls} emo">${DE_SYMBOLS[s]}</span>`;
+  if (style === 'de') return deIcon(s, cls);
   return `<svg class="${cls}" viewBox="0 0 100 100" fill="${suitColor(s, style)}" aria-hidden="true">${SHAPES[s]}</svg>`;
 }
 
@@ -73,6 +68,11 @@ export function cardElement(c, style = 'fr') {
   el.setAttribute('role', 'button');
   el.setAttribute('aria-label', cardName(c, style));
   let html = '';
+  if (style === 'de') {
+    const mark = (x, y, size) => `<g transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})">${deShape(s, 0)}</g>`;
+    el.innerHTML = deCardInner(s, r, () => figureSVG(r, s, style, mark, portraitFor(r)));
+    return el;
+  }
   if (r <= 4) {
     const { size, pts } = NUMBER_LAYOUT[r];
     // Wert in den vier Eckzeichen (oberste und unterste Reihe), wie bei der Zehn auf echten Karten
@@ -89,9 +89,7 @@ export function cardElement(c, style = 'fr') {
       + pip(s, style, 50, 50, 0.46);
   } else {
     const color = suitColor(s, style);
-    const mark = (x, y, size) => (style === 'de'
-      ? `<text x="${x}" y="${y}" font-size="${size}" text-anchor="middle" dominant-baseline="central">${DE_SYMBOLS[s]}</text>`
-      : `<g transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})" fill="${color}">${SHAPES[s]}</g>`);
+    const mark = (x, y, size) => `<g transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})" fill="${color}">${SHAPES[s]}</g>`;
     html = `<div class="frame"><div class="fig">${figureSVG(r, s, style, mark, portraitFor(r))}</div></div>`
       + pip(s, style, 23, 15.5, 0.24) + pip(s, style, 82, 8.6, 0.1)
       + pip(s, style, 77, 84.5, 0.24, true) + pip(s, style, 18, 91.4, 0.1, true);

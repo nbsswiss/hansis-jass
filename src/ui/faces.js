@@ -140,26 +140,31 @@ function jack(p, mark) {
   ${hand(44, 64)}`;
 }
 
-// Ober (deutschschweizer Bild): Mann mit breitem Federhut, Bart und Degen
+// Ober (deutschschweizer Bild, nach Foto): junger Mann mit Zipfelmütze, Pfeife mit Rauch,
+// roter Weste, blauen Ärmeln und Stock
 function ober(p, mark) {
-  const hair = '#5a3f28';
+  const hair = '#d9b25a';
   return `
-  <path d="M11 75 C13 57 24 48 35 46 L65 46 C76 48 87 57 89 75 Z" fill="${p.cape}" ${S(1)}/>
-  <path d="M36 46 L64 46 L61 75 L39 75 Z" fill="${p.coat}" ${S(0.9)}/>
-  <g fill="${YELLOW}" ${S(0.4)}><circle cx="50" cy="56" r="1.6"/><circle cx="50" cy="63" r="1.6"/><circle cx="50" cy="70" r="1.6"/></g>
-  ${noPortrait(`<path d="M34 19 C29 29 30 41 36 46 L41 31 Z M66 19 C71 29 70 41 64 46 L59 31 Z" fill="${hair}" ${S(0.8)}/>`)}
-  <path d="M38 45 L50 51 L62 45 L60 40 L40 40 Z" fill="${WHITE}" ${S(0.8)}/>
-  ${head({ hair })}
-  ${noPortrait(`<path d="M41 32 C41 42 45 46 50 46 C55 46 59 42 59 32 C56 37 44 37 41 32 Z" fill="${hair}" ${S(0.6)}/>`)}
-  <ellipse cx="50" cy="16.4" rx="23" ry="4.6" fill="${p.cape === GREEN ? RED : GREEN}" ${S(0.9)}/>
-  <path d="M37 16 C37 5 63 5 63 16 Z" fill="${p.cape === GREEN ? RED : GREEN}" ${S(0.9)}/>
-  <path d="M37.4 14 C44 16.4 56 16.4 62.6 14" fill="none" stroke="${YELLOW}" stroke-width="2"/>
-  <path d="M60 10 C66 0 77 0 82 5 C75 5.6 68 8.6 62 14 Z" fill="${WHITE}" ${S(0.7)}/>
-  <path d="M80 72 L84 20" stroke="${INK}" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M80 72 L84 20" stroke="${STEEL}" stroke-width="1.3" stroke-linecap="round"/>
-  <path d="M74 66 h12" stroke="${YELLOW}" stroke-width="2.4" stroke-linecap="round"/>
-  ${hand(80, 62)}
-  ${mark(22, 64, 7)}`;
+  <path d="M14 75 C15 58 24 49 34 47 L66 47 C76 49 85 58 86 75 Z" fill="${BLUE}" ${S(1)}/>
+  <path d="M34 47 L66 47 L64 75 L36 75 Z" fill="${RED}" ${S(0.9)}/>
+  <path d="M38 50 v25 M44 50 v25 M50 50 v25 M56 50 v25 M62 50 v25" stroke="${INK}" stroke-width=".4" opacity=".55"/>
+  <path d="M36 66 L64 66 L64 73 L36 73 Z" fill="${YELLOW}" ${S(0.7)}/>
+  <path d="M38 69.5 l3 -2.4 l0 4.8 l3 -2.4 l3 -2.4 l0 4.8 l3 -2.4 l3 -2.4 l0 4.8 l3 -2.4 l3 -2.4 l0 4.8 l3 -2.4 l3 -2.4" fill="none" stroke="${INK}" stroke-width=".7"/>
+  <path d="M42 46 L50 52 L58 46 L55 43 L45 43 Z" fill="${YELLOW}" ${S(0.7)}/>
+  <path d="M52 50 l8 6 l-2 3 l-6 -5 Z" fill="${RED}" ${S(0.6)}/>
+  ${noPortrait(`<path d="M37 20 C33 28 34 38 38 43 L42 30 Z M63 20 C67 28 66 38 62 43 L58 30 Z" fill="${hair}" ${S(0.7)}/>`)}
+  ${head({ hair: '#8a6a2a' })}
+  <path d="M35 21 C34 9 48 4 60 8 C70 11 72 18 70 22 Z" fill="${YELLOW}" ${S(0.9)}/>
+  <path d="M36 15 C30 8 22 8 18 14 C22 13 27 14 31 18 Z" fill="${BLUE}" ${S(0.8)}/>
+  <path d="M18 14 l-2 6 l3 -1 l1 4 l2 -6 Z" fill="${YELLOW}" ${S(0.6)}/>
+  <rect x="34" y="18.5" width="36" height="6" rx="2" fill="${RED}" ${S(0.8)}/>
+  <path d="M37 19 v5 M40 19 v5 M43 19 v5 M46 19 v5 M49 19 v5 M52 19 v5 M55 19 v5 M58 19 v5 M61 19 v5 M64 19 v5 M67 19 v5" stroke="${INK}" stroke-width=".5"/>
+  <path d="M57 36 L76 46" stroke="${INK}" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M74 44 l6 1 l-1 6 c-3 1 -5 -1 -5 -3 Z" fill="${YELLOW}" ${S(0.6)}/>
+  <path d="M62 33 c4 -6 10 -4 10 -9 c4 0 7 -4 4 -8 c3 -3 -1 -7 -5 -5" fill="none" stroke="${INK}" stroke-width=".7"/>
+  ${hand(74, 52)}
+  <path d="M16 72 L84 46" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>
+  <path d="M16 72 L84 46" stroke="#f4f1e6" stroke-width="2.6" stroke-linecap="round"/>`;
 }
 
 // rank: 5 = Bauer/Under, 6 = Dame/Ober, 7 = König. mark(x, y, size) zeichnet das Farbzeichen.

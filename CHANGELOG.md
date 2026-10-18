@@ -1,5 +1,13 @@
 # Changelog – Hansis Jass
 
+## 1.60 – 2026-10-18
+
+- Deutschschweizer Karten neu nach Fotovorlage: gezeichnete Schellen (gelbe Kugeln mit
+  rot-schwarzem Band), Rosen (gelbe Blüten mit rotem Kern), Schilten (schwarz-weisse Wappen,
+  jedes anders) und Eicheln statt Emojis; Zahlen in den Ecken im feinen Rahmen; Banner als
+  Fahne; Bildkarten mit „UNDER“, „OBER“, „KÖNIG“; Ober mit Zipfelmütze, Pfeife und Stock;
+  Ass mit grossem Zeichen.
+
 ## 1.50 – 2026-10-18
 
 - Zahlen 6–10 stehen in den vier Eckzeichen der Zahlenkarten (unten aufrecht lesbar).
